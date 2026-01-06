@@ -23,7 +23,10 @@ namespace myProject
 
         public void save(Dictionary<string, float[]> vector_db)
         {
-            //CHECK THIS
+            if (vector_db == null)
+            {
+                throw new ArgumentNullException(nameof(vector_db));
+            }
             string filePath = Path.Combine(fileStorePath, "embeddings.json");
             string json = JsonConvert.SerializeObject(vector_db);
             File.WriteAllText(filePath, json);
@@ -40,8 +43,12 @@ namespace myProject
             }
 
             string json = File.ReadAllText(filePath);
-            Dictionary<string, float[]> result = JsonConvert.DeserializeObject<Dictionary<string, float[]>>(json);
-            return result;
+            if(json == null)
+            {
+                throw new ArgumentNullException(nameof(json), "JSON is null.");
+            }
+            var result = JsonConvert.DeserializeObject<Dictionary<string, float[]>>(json);
+            return result ?? new Dictionary<string, float[]>();
         }
 
 

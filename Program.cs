@@ -12,6 +12,10 @@ using myProject;
 //cosine similarity function
 double cosine_similarity(float[] a, float[] b)
 {
+    if(a==null || b==null)
+    {
+        throw new ArgumentNullException();
+    }
     float dotProduct = 0f;
     for (int i = 0; i < a.Length; i++)
     {
@@ -70,6 +74,10 @@ if (vector_db.Count == 0)
     foreach (var chunk in chunks)
     { 
         //make a chunk embedding and add to dictionary
+        if (chunk == null)
+        {
+            throw new ArgumentNullException(nameof(chunk));
+        }
         var embedding = await llmService.CreateEmbeddingAsync(chunk);
         vector_db.Add(chunk, embedding);  
     }
@@ -81,7 +89,11 @@ if (vector_db.Count == 0)
 
 //user input flow
 Console.Write("Enter a question about cats: ");
-string query = Console.ReadLine();
+string? query = Console.ReadLine();
+if(query == null)
+{
+    throw new ArgumentNullException();
+}
 var queryvec =await llmService.CreateEmbeddingAsync(query);
 
 
@@ -107,7 +119,7 @@ string prompt = "Please use only the following context to answer the question:\n
 var response = await client.Models.GenerateContentAsync(
     model: "gemini-2.5-flash", contents: prompt
 );
-Console.WriteLine(response.Candidates[0].Content.Parts[0].Text);
+Console.WriteLine(response?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text);
 
 
 
