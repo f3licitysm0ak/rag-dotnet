@@ -8,6 +8,8 @@ using Google.GenAI.Types;
 using myProject;
 
 //define functions
+
+//cosine similarity function
 double cosine_similarity(float[] a, float[] b)
 {
     float dotProduct = 0f;
@@ -33,6 +35,7 @@ double cosine_similarity(float[] a, float[] b)
 
 }
 
+//"chunking" function to split text into appropriate chunks
 static List<string> ChunkText(string text, int chunkSize = 10)
 {
     var words = text.Split(new[] {' ', '\n', '\r'}, StringSplitOptions.RemoveEmptyEntries);
@@ -54,9 +57,8 @@ var llmService = new LLMService(apiKey);
 string textFilePath = GlobalSettings.TextFilePath;
 string vectorFilePath = GlobalSettings.VectorFilePath;
 
-
-FileVectorStore vectorStore = new FileVectorStore(vectorFilePath); //making FileVectorStore object with specified filePath
-
+//create FileVectorStore, read in text file, chunk text
+FileVectorStore vectorStore = new FileVectorStore(vectorFilePath); 
 String document = System.IO.File.ReadAllText(textFilePath);
 List<string> chunks = ChunkText(document, 10);
 
@@ -72,11 +74,10 @@ if (vector_db.Count == 0)
         vector_db.Add(chunk, embedding);  
     }
 
+    //save to local vector store
     vectorStore.save(vector_db);   
 } 
 
-// Now `vector_db` contains embeddings for 10-word chunks
-Console.WriteLine($"Generated embeddings for {vector_db.Count} chunks.");
 
 //user input flow
 Console.Write("Enter a question about cats: ");
