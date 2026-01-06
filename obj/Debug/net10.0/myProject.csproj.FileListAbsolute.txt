@@ -23,3 +23,4 @@ C:\Users\prach\.vscode\csharp\myProject\bin\Debug\net10.0\runtimes\win\lib\net7.
 C:\Users\prach\.vscode\csharp\myProject\obj\Debug\net10.0\myProject.csproj.AssemblyReference.cache
 C:\Users\prach\.vscode\csharp\myProject\obj\Debug\net10.0\myProject.csproj.Up2Date
 C:\Users\prach\.vscode\csharp\myProject\bin\Debug\net10.0\GeminiDotnet.dll
+C:\Users\prach\.vscode\csharp\myProject\obj\Debug\net10.0\myProject.sourcelink.json

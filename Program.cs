@@ -33,29 +33,38 @@ double cosine_similarity(float[] a, float[] b)
 
 }
 
-/*string[] retrieve(string query, int top_n = 5)
-{
-    return ["hello", "world"];
-}*/
 
 //load in dataset 
 var apiKey = GlobalSettings.GeminiApiKey;
 var llmService = new LLMService(apiKey);
-string filePath = GlobalSettings.TextFilePath;
+string textFilePath = GlobalSettings.TextFilePath;
+string vectorFilePath = GlobalSettings.VectorFilePath;
 
-Dictionary <string, float[]> vector_db = new Dictionary<string, float[]>();
-foreach (string line in System.IO.File.ReadLines(filePath, System.Text.Encoding.UTF8))
+
+FileVectorStore vectorStore = new FileVectorStore(vectorFilePath); //making FileVectorStore object with specified filePath
+
+Dictionary <string, float[]> vector_db = vectorStore.load();
+
+//checking if embeddings are being made for the first time
+if (vector_db.Count == 0)
 {
+    foreach (string line in System.IO.File.ReadLines(textFilePath, System.Text.Encoding.UTF8))
+    {   
     //make an embedding and add to dictionary
     var embedding = await llmService.CreateEmbeddingAsync(line);
     vector_db.Add(line, embedding);
-}
+    }
+
+    vectorStore.save(vector_db);   
+} 
+
 
 
 //user input flow
 Console.Write("Enter a question about cats: ");
 string query = Console.ReadLine();
 var queryvec =await llmService.CreateEmbeddingAsync(query);
+
 
 //compute all similarities
 Dictionary <string, double> similarity_db = new Dictionary<string, double>();

@@ -5,13 +5,19 @@ namespace myProject
     {
         public static string GeminiApiKey => Environment.GetEnvironmentVariable("GEMINI_API_KEY")
         ?? throw new InvalidOperationException(
-        "GEMINI_API KEY is not set." 
+        "Environment variable GEMINI_API KEY is not set." 
         );
        
         public static string TextFilePath =>
             Environment.GetEnvironmentVariable("TEXT_FILE_PATH")
             ?? throw new InvalidOperationException(
-                "Text file path environment variable is not set."
+                "Environment variable TEXT_FILE_PATH is not set."
+            );
+
+        public static string VectorFilePath => 
+            Environment.GetEnvironmentVariable("VECTOR_FILE_PATH")
+            ?? throw new InvalidOperationException(
+                "Environment variable VECTOR_FILE_PATH is not set."
             );
 
     }      

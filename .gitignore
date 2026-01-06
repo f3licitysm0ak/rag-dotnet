@@ -1,0 +1,4 @@
+obj/*
+*.json
+*.txt
+vectorstore/*
