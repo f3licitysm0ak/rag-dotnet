@@ -33,6 +33,20 @@ double cosine_similarity(float[] a, float[] b)
 
 }
 
+static List<string> ChunkText(string text, int chunkSize = 10)
+{
+    var words = text.Split(new[] {' ', '\n', '\r'}, StringSplitOptions.RemoveEmptyEntries);
+    var result = new List<string>();
+
+    for(int i = 0; i < words.Length; i += chunkSize)
+    {
+        //join words into a single 10-word chunk
+        result.Add(string.Join(" ", words.Skip(i).Take(chunkSize)));
+    }
+
+    return result;
+}
+
 
 //load in dataset 
 var apiKey = GlobalSettings.GeminiApiKey;
@@ -43,22 +57,26 @@ string vectorFilePath = GlobalSettings.VectorFilePath;
 
 FileVectorStore vectorStore = new FileVectorStore(vectorFilePath); //making FileVectorStore object with specified filePath
 
+String document = System.IO.File.ReadAllText(textFilePath);
+List<string> chunks = ChunkText(document, 10);
+
 Dictionary <string, float[]> vector_db = vectorStore.load();
 
 //checking if embeddings are being made for the first time
 if (vector_db.Count == 0)
 {
-    foreach (string line in System.IO.File.ReadLines(textFilePath, System.Text.Encoding.UTF8))
-    {   
-    //make an embedding and add to dictionary
-    var embedding = await llmService.CreateEmbeddingAsync(line);
-    vector_db.Add(line, embedding);
+    foreach (var chunk in chunks)
+    { 
+        //make a chunk embedding and add to dictionary
+        var embedding = await llmService.CreateEmbeddingAsync(chunk);
+        vector_db.Add(chunk, embedding);  
     }
 
     vectorStore.save(vector_db);   
 } 
 
-
+// Now `vector_db` contains embeddings for 10-word chunks
+Console.WriteLine($"Generated embeddings for {vector_db.Count} chunks.");
 
 //user input flow
 Console.Write("Enter a question about cats: ");
